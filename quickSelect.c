@@ -1,38 +1,34 @@
 #include <stdio.h>
-
-/*
-double quickSelect(double array[]) {
-    int size = sizeof(array) / sizeof(double);
-    int right = size - 1;
-    int i = -1;
-    int j = 0;
-
-    pivot = array[right];
+#include <time.h>
 
 
-
-
-}
-*/
-
-void quickSort(double array[], int size) {
-    //int size = sizeof(array) / sizeof(double);
+void quickSelect_Median(double *array, int size, double *result) {
     printf("size: %d\n", size);
 
-    recQuickSort(0, size-1, array, size);
+
+    recquickSelect_Median(0, size-1, array, size, result);
 }
 
-void recQuickSort(int left, int right, double array[],int size) {
+void recquickSelect_Median(int left, int right, double array[],int size, double *result) {
+    printf("\nleft: %lf,   right: %lf\n",   array[left], array[right]);
     if(right - left <= 0) {
+        *result = array[right];
         return;
     }
     else {
         double pivot = array[right];
-
         int part = partition(array, left, right, pivot);
+        printf("part = %d\n", part);
+        if(part > (int)(size/2))
+            recquickSelect_Median(left, part-1, array,size, result);
+        if(part < (int) (size/2))
+            recquickSelect_Median(part+1, right, array,size, result);
+        if(part == (int) (size/2)) {
+            *result = array[part];
+            return;
+        }
 
-        recQuickSort(left, part-1, array,size);
-        recQuickSort(part+1, right, array,size);
+
     }
 }
 
@@ -58,10 +54,11 @@ int partition(double array[],int left, int right, double pivot) {
     }
     swap(leftPtr, right, array);
 
-    for ( i = 0; i < 5; i++) {
-        printf(" %lf ", array[i]);
+    printf("the pivot is %0.1lf: ,   ", pivot);
+    for ( i = 0; i < 10; i++) {
+        printf(" %0.1lf ", array[i]);
     }
-    printf("\n%d\n", leftPtr);
+    printf("\nleftPtr: %d\n", leftPtr);
     return leftPtr;
 }
 
@@ -73,23 +70,27 @@ void swap(int val1, int val2, double array[]) {
 
 int main(int argc, char const *argv[]) {
     int i=0;
-    double array[5];
+    int size = 10;
+    double array[size];
+    double result = 0.0;
+    srand(time(NULL));
 
-    for (i = 0; i < 5; i++) {
-        array[i] = 5.0 - (double) i;
+
+    for (i = 0; i < size; i++) {
+        array[i] = (double) (rand()%100);
     }
 
-    for (i = 0; i < 5; i++) {
+    for (i = 0; i < size; i++) {
         printf(" %2.1lf ", array[i]);
     }
     printf("\n" );
 
-    quickSort(array,5);
+    quickSelect_Median(array,size, &result);
 
-    for (i = 0; i < 5; i++) {
+    for (i = 0; i < size; i++) {
         printf(" %2.1lf ", array[i]);
     }
-
+    printf("\n\n##### THE RESULT IS:  %lf  #####\n", result);
 
     return 0;
 }
